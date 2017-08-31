@@ -1,0 +1,41 @@
+========================
+Section 7: Odds and Ends
+========================
+
+-------------------
+Initialization - H1
+-------------------
+Check code.
+--> Great way to utilize creating objects with a lot of properties, objects, and areas to imititate database data if you're connected to a backend yet. Notation can be overwhelming at times but get used to it.
+	1. Object Notation with properties
+	2. Array notation
+	3. Function notations
+	--> These can all reside in an object
+- Remember comments between properties and elements in an array
+- Remember you're using colons (:) not equal signs
+
+
+-----------------------------------------------------------
+'typeof', 'instanceof', and Figuring out what something is - H2
+-----------------------------------------------------------
+Not camelcased to not be confused with functions
+- 'typeof'
+	- Tells us what type of thing something is
+	var a = 3
+	console.log(typeof a); --> outputs number, "3" would return a string
+- 'instanceof'
+	- If any objects down the prototype chain match the 'instanceof' object it's being compared with
+	var e = new Person();
+	console.log(e instanceof Person); // true
+
+
+-------------
+Strict Mode - H3
+-------------
+"use strict";
+- At the top of your script, use stricter rules in your code
+- Or goes at the top of a function (within it)
+- Doesn't allow a variable to be used unless you declare it
+- If you concatenate javascript files when they're pushed into production. If it exists on the very top of the first file, it'll be implemented in the rest of the files
+person = {}; // not allowed
+var person = {}; // allowed

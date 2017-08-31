@@ -1,0 +1,56 @@
+======================================================
+Section 2: Execution Contexts and Lexical Environments
+======================================================
+
+Syntax Parsers:
+A program that reads your code and determines what it does and if its grammar is valid
+- Programs that are running, that intermediate compiler that's putting your code into function
+
+Lexical Environment:
+Where something sits physically in the code you write
+- Where you see things written in your code affects how it interacts with other codes, functions, and variables in your code environment
+
+Execution Context:
+A wrapper to help manage the code that is running
+- There area lots of lexical environments. Which one is currently running is managed via execution contexts. It can contain things beyon what you've written in your code. (Example: Code is running a certain file, but is also running a framework/library along with it such as jQuery or Angular)
+
+
+------------------
+The Global Environ.
+------------------
+Window Object will also be the global object associated with any page
+- The execution context created on a global level in the browser contains Global Object 'window' and a variable called'this'
+	- These are essentially the same
+	- Global = "not inside a function"
+- Available to all code running inside that lexical environment
+
+
+Single Threaded:
+One command at a time
+
+Synchronous:
+One line at a time in order
+
+Execution Stack:
+For synchronous systems functions will be invoked in order of when they are executed. Once invoked they will be on top of the execution stack. Once execution finishes, that execution context is popped off the stack.
+- Function invocation: Executing a function
+
+Variable Scope:
+All variables are distinct and unique to their own execution context. Function variables stay local within that execution context
+
+- Functions have a reference to the outside environment or the global scope
+
+---------------------
+Asynchronous Callback
+---------------------
+Asynchronous:
+More than one at a time
+- When an event fires, it's handled asynchronously, other parts of the browser are looking and handling that part of the code while the rest of the JS file is still running
+
+Event Queue:
+Events, notifications of events get placed on a queue. (Ex: a click event)
+- When the execution context stack is empty, javascript periodically looks at the event queue and sees if any function should be run when the event is fired. The event is processed then the next item in the queue is processed.
+**EVENT QUEUE DOES NOT RUN UNTIL EXECUTION STACK/CONTEXT IS EMPTY**
+^ This is how synchronous javascript deals with asynchronous events. When multiple events and exection contexts are being handled, it prioritizes the execution stack before the event queue. 
+- Events are processed in the order they happen or synchronously
+

@@ -1,0 +1,63 @@
+================================================================
+Section 5: Object-Oriented Javascript and Prototypal Inheritance
+================================================================
+Classical vs. Prototypal Inheritance
+Inheritance:
+One object gets access to the properties and methods of another object
+- Classical inheritance is very verbose.
+- Prototypal Inheritance is flexible, extensible, and easy to understand
+	- Different from the OO approaches in other languages
+	- JavaScript's version of granting properties and methods to other objects that inherit it.
+
+--------------------------------
+Understanding the Prototype - E2
+--------------------------------
+All objects including functions have a prototype property.
+	- proto {}
+		- This is object's prototype, can grab it's properties and methods
+		- By setting one object.__proto__ (never use this) = anotherObject; you inherit the other object's properties and method but only uses it if it doesn't exist on the current object, then checks it's prototype
+	- Each prototype of an object can have its own property, if you call the object by a property the original object didn't have (obj.prop3), it looks at all the other prototypes associated with it and then calls it
+	- Prototype Chain
+		- Makes these properties look like they're on the original object, but it's actually somewhere down the chain down a sequence of objects. 
+		- You don't need to keep using proto.proto., just call the orginal object
+	- You can use another instance of the object and point it to a prototype property of the original object
+	- I have a special reference in my object that says where to look for other properties
+
+----------------------------------------
+Everything is an Object (or a primitive) - E4
+----------------------------------------
+Everything has a prototype.
+To check the base prototype's functions for objects, functions, arrays: 
+- To access these prototype functions use: __proto__ after the variable name and add dot notation to view possible methods
+1. Object
+	- var a = {};
+	--> Object {} is the base object, at the very bottom of the prototype chain
+	- All object can access its methods like 'toString'
+2. Function
+	- var b = function () {};
+	--> A function's prototype: functionName._proto_. (gives you methods like bind(), call(), apply())
+	- Built in javascript methods for a function
+3. Array
+	- var c = [];
+	- Ex: c.__proto__.push();
+	--> An array's prototype: [] gives you indexOf(), push(), etc.. 
+	- c.__proto__proto. would give you methods from an Object {} to choose from
+
+---------------------
+Reflection and Extend - E4 (Underscore library)
+---------------------
+Reflection:
+An object can look at itself, listing and changing its properties and methods
+--> JS objects can look at itself
+
+for (var prop in person) {
+	if (person.hasOwnProperty(prop)) {		// Checks if the properties only reside in person, doesn't go up prototype chain
+		console.log(prop + ': ' +person[prop]);		// retrieves name and value of each property in the person object
+	}
+} 	// Loops over all members of the person object
+
+- To check if a property resides ONLY on the current object it's referencing, use .hasOwnProperty()
+
+Extending objects, combining objects that are not using prototypes to link
+-> First object inherits all the properties and methods of the others mentioned
+--> Underscore library, access the method using _.extend();

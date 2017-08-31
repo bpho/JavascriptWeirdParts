@@ -1,0 +1,127 @@
+==============================
+Section 3: Types and Operators
+==============================
+Dynamic Typing:
+You don't tell the engine what type of data a variable holds, it figures it out while your code is running
+- Variables can hold different types of values because it's all figured out during execution.
+
+Java uses static typing. You tell the java engine ahead of time what type of data its variable holds. Static typed
+Ex: bool isNew = 'hello' // returns an error
+Javascript uses Dynamic typing. Dynamically Typed
+Ex: isNew = true;
+isNew = 'yup';
+isNew = 1;
+
+Primitive Types:
+6 primitive types in Javascript
+A type of data that represents a single value (not an object which is a collection of name value pairs)
+	1. Undefined
+		- Represents a lack of existence (shouldn't use this to set a variable)
+	2. Null
+		- Also represents lack of existence (better to use when you want a variable to not have a value)
+	3. Boolean
+		- True or False
+	4. Number
+		- Only one numeric type
+		- Floating point number (there's always some decimales). Unlike other programming languages there's only one 'number' type
+	5. String
+		- A sequence of characters both '' and "" are used
+	6. Symbol (NEW)
+		- Used in ES6
+
+Operators
+A special function that is syntactically (written) differently
+
+Operator Precedence:
+Which operator function gets called first
+- Functions are called in order of precedence
+
+Operator Associativity:
+What order an operator functions get called in (left to right) or (right to left)
+- On the operator precedence PDF, depending on the operators used, the code will be executed either left to right or right to left
+ex:
+a = b = c;
+c would be assigned to b then b would be assigned to a, according to the PDF (Assignment)
+- Right-to-left associativity
+
+---------
+Coercion:
+---------
+Converting a value from one type to another
+- Happens quite often in Javascript because it's dynamically typed, tries to convert to the values you want because you're not explicitly telling Javascript what type you want the data to be sometimes
+ex: var a = 1 + '2';
+	- Returns '12', the 1 was coerced to the string 1
+	- the '+' also works as concatenation
+
+Using the Number(arg) function on the js console on your browser, you can coerce any value or string in your browser and see what it returns:
+Ex: Number("3") --> coerced to 3
+Ex: Number(false) --> 0
+Ex: Number(true) --> 1
+
+Another example of operator associativity (order of operations):
+console.log(3 < 2 < 1); // returns true
+- You would expect this to return false, but on the precedence PDF this goes from left to right
+- 3 < 2 = false --> (false < 1); // The false is coerced to 0
+- false = 0 --> (0 < 1); // = true
+console.log(1 < 2 < 3); // Not what you expect, not comparing the expression as a whole
+- (1 < 2) = true
+- (true < 3) --> (0 < 3) == true
+
+NaN = Not a Number
+- Means you have something that you're trying to coerce into a number, but can't be converted because it can't be represented in any way as a number
+Number("randomstring") == NaN
+Number(null) = 0
+
+---------------------------------
+Equality (==) and Inequality (!=)
+---------------------------------
+3 == 3 // true
+"3" == 3 // also true, the 3 was coerced to a string or vice versa
+- the double equal coerced the data types
+- Equality coerces the data types in order to dynamically match the two values
+- Only use this if you want to consciously or explicitly allow Javascript to coerce your data types
+
+Strict Equality (===) and Strict Inequality (!==)
+- Compares two things, but doesn't try to COERCE the values. If the two values are just not the same type, they just return false
+3 === 3 // true
+"3" === 3 // false
+- Highly recommended for TRUE equality to test values
+
+Boolean:
+You can use coercion to your advantage by using it to check if there exists a value within a variable
+Ex:
+a = ''; // false
+a = null; // false
+a = undefined; // false
+a = 0; // false
+- So when testing if these variables contain anything, coercion aids us by forcing these equalities to be false (lack of existence)
+- Although there is a caveat, a = 0 also equals false, so you can't test the lack of existence if you're expecting a float value
+
+-------------------
+Default Values '||'
+-------------------
+There's a neat trick for setting default values
+--> If undefined ends up being the value of name
+function greet(name) {
+	name = name || '<Your name here>';
+	console.log('Hello' + name);
+}
+greet();
+- If no parameters are passed when the function is invoked, then the local variable name is DEFAULTED with undefined
+- So when the 'or' operator checks the values, name = false, so it returns name = '<Your name here>';
+** (undefined || 'Any value') --> undefined is coerced to false, 'Any value' can be COERCED to true, so it returns that
+- If you pass two values that can be coerced to true and false, it returns the FIRST one that can be coerced to true
+greet('Benny'); // 'Hello Benny', since when comparing 'Benny' || '<Your name here>', 'Benny' first value that returns true.
+
+undefined || 'true value'  OR  null || 'true value'  OR  "" || 'true value'
+"If something does not exist give me something that does exist" --> all returns 'true value'
+
+||, OR has a lower precedence than equal
+
+-------------------------------
+Framework Aside: Default Values
+-------------------------------
+Certain techniques learned and explained are shown how they are applied in real world applications
+- Often times frameworks/libraries are stacked as separate scripts that contain the source code on the same website/page that utilizes them. The scripts are stacked and read as one whole script. It'll read through all of them, and any repeating variables will overriden as you go down in scripts. This is because the functions/variables in each framework or library is in the global namespace. To counteract this scripts will often have this:
+window.libraryName = window.libraryName || "Library Code";
+- This is allow scripts to accept the default value of the previous libraryName if a similar variable was used in a previous script. This retains its function from the other framework or library which also invalidates the usage of that same function in the succeeding script.

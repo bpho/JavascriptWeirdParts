@@ -1,0 +1,396 @@
+================================
+Section 4: Objects and Functions
+================================
+In JS, Functions are Objects
+Objects and the Dot:
+- Dot and bracket notation are possible ways to add properties to an object
+Ex: person.city = 'New York' vs. person["city"] = 'New York'
+var person = new Object(); // one way of creating a new person object
+--> Not the best way of creating an object
+
+Objects can have:
+- Primitive properties
+- Object properties
+- Function methods
+
+--> Creating another object within an object as a property: person.address = new Object();
+With the operator associativity of the dot (.), you can expect to read it left-to-right
+Ex: person.address.city = 'New York' // This creates a city property for the person.address object
+
+-----------------------------------
+Object Literal Declaration/Notation
+-----------------------------------
+The preferred way of initializing/declaring an object
+Ex: var person = {}; // the same as: var person = new Object();
+- You can set up properties all within those brackets, and essentially treat it all as one line of code.
+
+var person = {
+	firstname: 'Benny',
+	lastname: 'Ho',
+	address: {
+		street: '4097 Ancestry Circle',
+		city: 'Matthews',
+		state: 'NC'
+	}
+};
+
+- When a function wants to call/use an object as a parameter, you can create it on the fly using object literal syntax
+Ex:
+funciton greet(person) {
+	console.log("Hello " +person.firstname);
+}
+greet(person); // --> "Hello Benny"
+greet({ 
+	firstname: 'Benny', 
+	lastname: 'Ho'
+}); // --> "Hello Benny"
+
+
+------------
+Dot Notation
+------------
+Allows you to add properties on the fly as well if you have reference to your object name
+- Creating another object property within the object
+var Benny = {};
+Benny.hobbies = {
+	sports: 'Basketball'
+}; 
+--> Must use {} notation, can't use dot to create property within Benny.hobbies because it doesn't exist yet
+Final Representation
+var Benny = {
+	hobbies: {
+		sports: 'Basketball'
+	}
+};
+
+-----------------
+Faking Namespaces
+-----------------
+Namespace:
+A container for variables and functions
+- Typically to keep variables and functions with the same name separate
+Ex: Having two greet properties/variables with the same name
+var greet = "Hello";
+var greet = "Hola";
+--> To prevent multiple same name variables or namespace collisions, create a namespace or a container by CREATING AN OBJECT
+
+var english = {};
+var spanish = {};
+english.greet = "Hello";
+spanish.greet = "Hola";
+--> These don't override the same 'greet' variable
+--> console.log(english); becomes a container/namespace.
+- Seen in a lot of frameworks
+
+english.greetings = {}; // must be initalized since object will be recognized as undefined with left-to-right associativity
+english.greetings.greet = "Hello";
+
+------------------------
+JSON and Object Literals
+------------------------
+- Javascript Object Notation
+Key Differences between JSON and Object Literals:
+	- JSON Property names are also wrapped in quotes
+
+Converting Object Literal to JSON String (JSON.stringify)
+var objectLiteral = {
+	firstname: "Benny"
+	isProgrammer: true
+}
+
+JSON.stringify(objectLiteral);
+
+{
+	"firstname": "Benny"
+	"isProgrammer": true
+}
+Converting JSON String to JS Object Literal (JSON.parse)
+- Must be used on a string (that is proper JSON)
+var jsonValue = JSON.parse('{
+	"firstname": "Benny"
+	"isProgrammer": true
+}');
+
+---------------------
+Functions are Objects --> Possible in Javascript not other OOP languages 
+---------------------
+First Class Functions:
+Everything you can do with other types you can do with functions.
+- Assign them to variables, pass them around, create them on the fly.
+(Everything you can do with object, string, booleans, variables, you can do with Functions)
+
+Function is a special type of object:
+Can hold: 
+	- Primitive data types
+	- Objects
+	- Functions
+- Can have a name or be an anonymous function 
+- CODE property, can have code
+	- Invocable '()'
+Just like objects:
+function greet() {	// CODE, invocable, can call greet();
+	console.log("Hello");
+} 
+greet.language = 'English'; // now a property of the function 
+
+function greet() {
+	console.log("Hello");
+	this.language = 'English';
+}
+
+--------------------------------------------
+Function Statements and Function Expressions
+--------------------------------------------
+Expression:
+A unit of code that results in a value
+- It doesn't have to save to a variable
+Ex: 2 + 5, a === 5
+
+Function Statement:
+function greet() {
+	console.log('hi');
+}
+--> Doesn't result in a value, has a function name though
+--> You can declare/invoke greet() anywhere since it's hoisted up to global context in memory
+
+Function Expressions:
+var anonymousGreet = function() {		// An anonymous function, function with no name, returns an object stored in variable
+	console.log('hello');
+}
+anonymousGreet(); 	// can invoke the function, but the function is known as an expression since it results in value
+--> Creating a object on the fly and setting it equal to the variable, the address in memory the variable points to is the address of the function
+--> No function name
+--> Can't invoke before the function has been declared since it's not recognized in memory yet as a function, although the variable is recognized (will result in undefined if '()' before declaration)
+
+function log(a) {
+	console.log(a);
+}
+--> You can pass var, objects, functions into function log
+Ex:
+log({ greeting: 'hello' }); --> object literal, that results in printing the contents of the object
+
+------------------
+This is using a function expression as an argument.
+--> This is possible because of first class functions, meaning you can treat functions just like any other type
+
+log(function() {
+	console.log("hello");
+}); --> Creating a function on the fly, and will be invoked as anonymous. It results in printing the contents of the function NOT console.logging it. It can now be referenced in log with the 'a' parameter
+
+How do we run that function that was passed to 'log'?
+function log(a) {
+	a();		// You will see 'hello'
+}
+- Give functions to other functions to increase functionality. This is known as:
+*FUNCTIONAL PROGRAMMING*
+------------------
+
+-------------------------
+By Value vs. By Reference - D6b
+-------------------------
+Passing by value: (two variables become the same by copying two different spots in memeory)
+var a = 3;	// address in memory = 0x001 (example)
+var b = a;	// address in memory = 0x002 (example), same value as a, different address
+- If you change the value of a, it's not going to affect b
+
+HOWEVER this is different with objects (passed by reference):
+var a = { greeting: 'hello' };	// address in memory = 0x001
+var b = a;	// address in memory = 0x001
+--> No copy of the object is created, just two names created for the SAME object, same value because they look at the same place in memory.
+--> Passed by reference, all objects are passed by reference
+- If you change 'a', it'll change the value/object of 'b' to match it as well
+
+Passed by Reference via a Function:
+Still only passes by reference if a function is used instead
+function changeGreeting(obj) {
+	obj.greeting = 'newHello';
+}
+changeGreeting(b);
+console.log(a);	// They will both output 'newHello'
+console.log(b);	
+
+- Once JS recognizes a value as a primitive type when an '=' operator is used between two variables, a new address in memory is automatically created for that variables and same value
+
+Mutate:
+To change something
+- "Immutable" means it can't be changed
+
+*** "=" or initializing a new object literal will create a new address in memory ****
+var b = { greeting: 'hello2' }
+--> A new memory space is set up, so 'a' and 'b' are both pointing to different spaces in memory
+
+ALL PRIMITIVE TYPES ARE BY VALUE, ALL OBJECTS ARE BY REFERENCE
+
+*** Java always passes arguments by value NOT by reference. ***
+*** JavaScript, however, passes arguments by REFERENCE ***
+
+------------------------------
+Objects, Functions, and 'this' - D7 (VIEW app.js Starter)
+------------------------------
+When a new function is invoked a new execution context is created
+--> When that CODE is invoked the code is created and added to the execution stack
+
+- Each execution context has a variable environment
+- An outer lexical environment --> when accessing variables that exist outside a function
+- 'this' is automatically given with every new execution context. It will point to a different thing depending on how the function is invoked. Different scenarios call for different values
+	1. When you create a function statement or expression, the 'this' keyword inside the function still refers to the outside, global environment. (Points to the same address --> the Global Object)
+		function a() {
+			this.newvariable = 'hello'; // Since this refers global context, you can reference it outside the function w/o 'this'
+		}
+		console.log(newvariable); // Just like in Java when creating an object constructor
+	2. In a case where a function is actually a method attached to an object (See app.js of D7), the 'this' keyword becomes the object that the method is sitting inside of
+
+--> Within an object literal, if the value is a primitive it's called a PROPERTY, if the value is a function it's called a METHOD
+
+-------------------------------
+Arrays - Collection of Anything - D7b
+-------------------------------
+var arr = new Array();  OR  var arr = [1, 2, 3];
+- Since JS is dynamically typed, their arrays can anything on the fly. Mix and match the individual items to represent different types. Can hold anything
+var arr = [
+	1,
+	false,
+	{
+		name: 'Benny Ho',
+		address: '2112 Main St'
+	},
+	function(name) {
+		var greeting = 'Hello ';
+		console.log(greeting + name);
+	},
+	"hello"
+];
+arr[3](arr[2].name);   // Invoke the function in the array by a string property of an object in the array
+--> 'Hello Benny ho'
+--> This array contains a float, boolean, object, function, and string
+
+----------------------
+'arguments' and spread - D8 (Check finished code)
+----------------------
+Refresher: Execution Context is Created (When a function is invoked)
+You have the following:
+	- Variable Environment
+	- 'this'
+	- Outer Environment
+	- 'arguments'
+
+Arguments:
+The parameters you pass to a function
+- Javascript gives you a keyword of the same name which contains them all
+- 'arguments' contain a list of all the values/paramters you pass to a function
+	- Acts like an array, but doesn't have all the features of a JS array
+
+- In javascript you can call a function without proper arguments, and the parameters will just be undefined if used within the function. Sets up memory space for them. You can skip the passing of parameters.
+
+Spread Parameter:
+(...other)
+- Parameters that aren't defined explicitly in the function, will be added on into a javascript array
+- Take every other argument and wrap it up into a variable of the name provided after the '...' three dots
+- So with 3 additional parameters they'd be accessed by other[0], other[1], other[2]
+
+It is common to use Function.prototype.apply in cases where you want to use the elements of an array as arguments to a function.
+
+function myFunction(x, y, z) { }
+var args = [0, 1, 2];
+myFunction.apply(null, args);
+With spread syntax the above can be written as:
+
+function myFunction(x, y, z) { }
+var args = [0, 1, 2];
+myFunction(...args);
+
+If you'd like to combine two arrays and place elements at any point within the array, you can do as follows:
+var arr1 = ['two', 'three'];
+var arr2 = ['one', ...arr1, 'four', 'five'];
+
+// ["one", "two", "three", "four", "five"]
+
+Uses for Spread: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator
+
+--------------------
+Function Overloading - D9 (Check Finished)
+--------------------
+Doesn't really work in JavaScript where you can have multiple methods of the same name with different number of parameters
+--> Framework design/pattern, to have simpler function calls.
+
+--------------
+Syntax Parsers
+--------------
+Reads your code and determines if it's valid.
+
+----------------------------------------------
+Dangerous Aside: Automatic Semicolon Insertion - D11
+----------------------------------------------
+Semicolons are optional in core Javascript
+- Reads one character as a time, knows what the syntax should look like (syntax parser)
+- Anywhere the syntax parser expects a semicolon, it will place one
+- Always place your own semicolons
+- To prevent it, because it goes character by character, move characters after words like return.
+	Ex: Put starting curly braces on the same line as functions
+
+----------
+Whitespace
+----------
+Invisible characters that create literal 'space' in your written code
+- Carriage return, tabs, spaces
+- JS is very liberal in accepting whitespace
+var
+	// name of person
+	firstname,
+
+	// lastname of person
+	lastname;
+
+var person = {
+	// the first name
+	firstname: 'John',
+
+	// the last name
+	lastname: 'Doe'
+};
+--> You can return and add whitespace, and it will all run the same.
+
+----------------------------------------
+Immediately Invoked Function Expressions (IIFE)S - D14
+----------------------------------------
+Invoking the function immediately after creating it
+var greeting = function(name) {
+	console.log('Hello' + name);
+}(); --> Notice the '()'
+--> same as console.log(greeting());
+- IIFE, a function expression that is invoked immediately
+- However, if you use 'return' instead of console.log the string is stored in the variable greeting
+var greeting = function(name) {
+	return 'Hello ' + name;
+}('Benny');
+console.log(greeting);
+--> Would return the string 'Hello Benny' stored in the variable greeting
+- If you try to invoke it in console.log(greenting()); it will return an error
+
+You can invoke functions without using a statement (check code), no NAME needed. 
+	- Wrap your function in parenthesis
+	- Add '()' with arguments if needed
+	- This will be an 'expression' since it's in paranthesis
+	- Wrapped in paranthesis to trick syntax parser
+		- If parenthesis didn't come before the 'function' keyword, the parser would've expected a name, as it reads it CHARACTER BY CHARACTER and thinks it's about to be a function expression
+var firstname = 'Benny';
+(function(name) {
+	var greeting = 'Inside IIFE: Hello';
+	console.log(greeting + ' ' + name);
+}(firstname)); --> IIFE, you can invoke the argument/function either before the ');' or between it
+--> Outputs: Inside IIFE: Hello Benny
+
+- Great TOOL, almost used in every framework and library that exists today.
+- This is just executing code on the fly
+
+Why is this useful?
+------------------------------------
+Framework Aside: IIFEs and Safe Code - D15
+------------------------------------
+- Variables declared inside IIFE's are in its own execution context, can't be referenced in the global context
+- Unlike before, when you declared variables, it would be hoisted up to the global context, unless it's done within an object
+- Wrapping in IIFE's doesn't interfere with other code in other libraries/frameworks
+	- OFTEN TIMES you will see in the very beginning of the source code of a framework or library, it is wrapped in parenthesis, and at the very end. So the file is just one big IIFE. Avoid colliding with other code, creating something usable
+	- If you do want access to global variables, you pass 'WINDOW' into your IIFE (Check code)
+
+

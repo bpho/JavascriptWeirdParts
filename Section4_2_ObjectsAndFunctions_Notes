@@ -1,0 +1,185 @@
+===================================================
+Section 4.2: Objects and Functions - Begin Closures
+===================================================
+----------------------
+Understanding Closures - D16
+----------------------
+Returning a function within a function --> Variables still stay intact even after execution context
+--> Feature of JS that gives you access to your outer variables, doesn't matter if the outer functions finish executing or not
+
+A FEW WAYS TO TYPE CLOSURES (1 and 3 standard ways) RETURN FUNCTION, IIFE:
+1.
+function greet(whattosay) {
+	function innerGreet(name) {
+		console.log(whattosay + ' ' + name);
+	}
+	return innerGreet;
+}
+var myFunc = greet('Hello');
+myFunc('Benny');
+
+2.
+function greet(whattosay) {
+	function innerGreet(name) {
+		console.log(whattosay + ' ' + name);
+	}
+	innerGreet('Benny');
+}
+greet('Hello');
+
+3.
+function greet(whattosay) {
+	return function(name) {
+		console.log(whattosay + ' ' + name);
+	}
+}
+--> Method One
+greet('Hi')('Tony'); // Invoke the function within the function and provide necessary params
+
+Do it differently:
+Set a variable equal to result of a function
+var sayHi = greet('Hi');		// This 'Hi' parameter is kept in memory within the variable
+sayHi('Benny');
+--> Also works
+--> How does sayHi know the value of the parameter from the greet function?
+--> Looks for the variable outside the execution context, down the scope chain. 
+--> Even though the greet function finished, any function called within that function still has access to what's in memory that was saved/initialized when the other exeuction context still existed
+- "Closing in all the variables it's supposed to have access to" = Closure
+
+
+-------------------------------
+Understanding Closures - Part 2 - D16b (Check out Finished code)
+------------------------------- 
+arr.push(); // Add things to an array
+- Arrays are collections of anything, you can put functions in it
+- "The value of i is what it is from the moment I called the function"
+	- Look up the scope chain for the last time 'i' was used.
+--> This is how we get the values we need
+
+
+------------------
+Function Factories - D17
+------------------
+Factory:
+A function that returns or makes other things for you.
+- Taking advantage of closures that use the outer parameter values to set and use in the inside function that's returned
+function makeGreeting(language) {
+	return function(firstname, lastname) {
+		if (language === 'en') {	// 'language' is within the scope chain of the outer function, so parameter can be accessed
+			console.log('Hello ' + firstname + ' ' + lastname);
+		}
+
+		if (language === 'es') {
+			console.log('Hola ', + firstname + ' ' + lastname);
+		}
+	}
+}
+var greetEnglish = makeGreeting('en');		// Both have closures wrapped inside, with 'language' pointed to 'en'
+var greetSpanish = makeGreeting('es');
+greetEnglish('Benny', 'Ho');		// Finds Hello scope chain
+greetSpanish('Benny', 'Ho');
+--> They each get their own execution context
+--> Each of these variables will hold different functions with different values for the parameter 'language'.
+--> For example, if greetEnglish was invoked, you would provide two parameters: greetEnglish('Benny', 'Ho'); --> Output: Hello Benny 
+
+Looking at the above code, here's the breakdown:
+Global Execution context:
+	- greetEnglish
+	- greetSpanish
+	- makeGreeting
+makeGreeting() execution context is created on line 56:
+	- language 'en'
+		- The memory space is still stored, kept around because of closures
+	- The execution context is then destroyed but 'language' is still kept in memory
+makeGreeting() execution context is created on line 57:
+	- language 'es'
+		- The memory space is stored, closure
+	- Execution context destroyed
+Line 58, execution context of greetEnglish is created from '()':
+	- Becomes the closure along with the parameter language 'en'
+Line 59, execution context of greetEnglish is created from '()':
+	- Becomes the closure along with the parameter language 'es'
+
+----------------------
+Closures and Callbacks - D18 - callback_ex1.js
+----------------------
+setTimeout() --> Parameters take a function of what to execute after a certain time is up
+- LOOK AT CODE (Finished)
+
+Callback Function (1): 
+A function you give to another function, to be run when the other function is finished
+- So the function you call or invoke '()', calls back by calling the function you gave it when it finishes
+- When functionA(functionB); functionA finishes, functionB runs
+
+Callback Function (2):
+A callback function, also known as a higher-order function, is a function that is passed to another function (let’s call this other function “otherFunction”) as a parameter, and the callback function is called (or executed) inside the otherFunction. A callback function is essentially a pattern (an established solution to a common problem), and therefore, the use of a callback function is also known as a callback pattern.
+
+VERY GOOD ARTICLE: http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/
+
+-----------------------
+call(), apply(), bind() - D19 (Finished)
+-----------------------
+To work around 'this', you can always declare a object/function instance of this and assign it to a variable
+TimeCard.prototype = {
+    // ...
+    doSomething: function() {
+        var thisCard = this;
+        someArray.forEach(function() {
+            thisCard.getTimeCardData(); // <=== Problem
+        });
+    }
+    // ...
+};
+
+All functions have access to a call(), apply(), and bind() method. They all have to do with the 'this' variable
+- Look in the code
+-------
+.bind()
+-------
+--> var logPersonName = logName.bind(person);
+var person = {};
+--> .bind() tells the logName function that whenever it uses 'this' within the function, it's not pointing to the global context, but to the object person instead. 
+--> .bind() creates a copy of the function, so logPersonName(), will now allow 'this' to point to the person object, although the original function still has a global object 'this'
+- Two ways to bind, either to the end of the function or to the function name when assigning the function call to another variable
+
+- You can also use .bind() to set permanent values for the function copy. See code for example.
+	- The first parameter can be 'this' if the keyword is not necessary. Every subsequent argument will be the value for the arguments in the function.
+
+-------
+.call()
+-------
+Allows you to invoke a function AND decide what the 'this' variable will be
+- First argument is what the 'this' should be, every proceeding parameters are the arguments to the function.
+- .bind() creates a copy of the function, .call() keeps the original and calls it
+logName.apply(person, 'en' , 'es');
+
+--------
+.apply()** --> Preferred, syntactically 
+--------
+Does the exact same thing as .call(), except it wants an array of parameters
+logName.apply(person, ['en' , 'es']);
+
+Check code for applications of these:
+	- Function Borrowing
+		- apply() or call() to invoke a function from another object, but using a new object for the execution context to change the value of 'this'
+	- Function Currying
+		- Creating a new function from the original function along with .bind() and some permenant, preset parameter values
+		- Useful in mathematical situations
+
+----------------------
+Functional Programming - D20
+---------------------- 
+Look at finished code of D20
+- Functional programming allows the passing of callback functions within a function to have dynamic things done to variables within the function. Treating first class functions as objects raises the amount of functionality you can give to a function
+
+CHALLENGE: Create your own functions that you pass for mapForEach (in finished code) --> Starter
+
+Simplifying Your Code Even More:
+	- Instead of splitting your code into functions, think about how to use your functions within functions, create more modularity and returning functions. Utilize javascripts first class functions.
+	- Work on it, it becomes more natural, improve granularity
+	- Functions, especially tiny ones, should do their best to NOT MUTATE data. Only change the data within the lexical scope of a function that is high up the scope so it doesn't permanently affect any variables
+
+---------------------------
+Function Programming Part 2 - D20b
+---------------------------
+Look at underscore.js to see functional programming at its best.

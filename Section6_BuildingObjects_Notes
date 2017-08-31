@@ -1,0 +1,168 @@
+===========================
+Section 6: Building Objects
+===========================
+-----------------------------------------------------------
+Function Constructors, 'new', and the History of Javascript - F1
+-----------------------------------------------------------
+The correct way to set a prototype, using the 'new' keyword.
+- Constructing objects using a function.
+
+function Person(firstname, lastname) {
+	this.firstname = firstname;
+	this.lastname = lastname;
+}
+var benny = new Person('Benny', 'Ho'); 	// An empty object is created, the 'this' variable points to the new empty Person object, and the 									properties are added. Whatever you do with the 'this' object will be returned
+console.log(benny); 		// Gives all the properties of Person
+
+- If you had a return statement to the function
+Ex: return { greeting: "I got in the way "};, 
+--> it would return that object literal declared, and ruin the whole aspect of using the function as an object
+
+** If you don't return anything, you get an object returned **
+--> Constructing an object using a function (Function Constructor)
+
+Function Constructors:
+A normal function that is used to construct objects
+- The 'this' variable points to a new empty object, and that object is returned from the function automatically
+
+
+--------------------------------------
+Function Constructors and '.prototype' - F2
+--------------------------------------
+Every JavaScript function has a prototype property (this property is empty by default), and you attach properties and methods on this prototype property when you want to implement inheritance. The prototype property is used primarily for inheritance; you add methods and properties on a function’s prototype property to make those methods and properties available to instances of that function.
+
+Example:
+All objects created with object literals and with the Object constructor inherits from Object.prototype. Therefore, Object.prototype is the prototype attribute (or the prototype object) of all objects created with new Object () or with {}. Object.prototype itself does not inherit any methods or properties from any other object.
+// The userAccount object inherits from Object and as such its prototype attribute is Object.prototype.​
+​var userAccount = new Object ();
+
+Every function has a prototype property.
+--> As soon as you use the 'new' operator, it because a function constructor to build objects
+--> When you .prototype variables that were created by using the function as a function constructor
+Person.prototype.getFullName = function () {
+	return this.firstname + ' ' + this.lastname;
+}
+
+- The 'prototype' property of all functions is where the prototype chain points for any objects created using that function as a constructor
+- Person.prototype is the reference or the prototype for all objects created through a function constructor. Person.propertyName would invoke a property but Person.prototype.newProperty would create a new property since it is the original Person object
+- You can add to the prototype chain later on in your code and previous objects created would have access to that property/method
+
+--> You can add features and properties to objects later on in your code by invoking the prototype keyword
+
+Person.prototype = {
+	getFullName: function() {
+		return this.firstname + " " + this.lastname;
+	},
+	middleName: 'Po-Wei'
+}
+
+************************* IMPORTANT *************************
+Prototyping = Efficiency
+-------------------------
+Example: Why not add a method to a function, instead of prototyping it later.
+- If you make different instances of the function in separate objects, let's say 100. You'll have 100 instances of that function, whereas when you prototype you only have one. 
+- Functions are objects anything inside will take up memory space
+- BETTER PUT YOUR METHODS ON THE PROTOTYPE --> Only need one copy to be used.
+	- Person.prototype.getFullName = function () {} ;
+- You need your properties for your objects because they'll be different for each object
+	- ex: Person(firstname, lastname)
+- Instead of copying it over and over again in each instance of the object, your object will just look down the prototype chain to find the method when it needs to be invoked
+***************************************************************
+
+http://javascriptissexy.com/javascript-prototype-in-plain-detailed-language/ --> Great example of inheritance being used with prototyping
+
+
+Prototype Chaining:
+	- Similarly, if you want to access a property of an object, the search for the property begins directly on the object. If the JS runtime can’t find the property there, it then looks for the property on the object’s prototype—the object it inherited its properties from.
+	- If the property is not found on the object’s prototype, the search for the property then moves to prototype of the object’s prototype (the father of the object’s father—the grandfather). And this continues until there is no more prototype (no more great-grand father; no more lineage to follow). This in essence is the prototype chain: the chain from an object’s prototype to its prototype’s prototype and onwards. And JavaScript uses this prototype chain to look for properties and methods of an object.
+	- If the property does not exist on any of the object’s prototype in its prototype chain, then the property does not exist and undefined is returned.
+
+- Make sure if you're making a function that'll become an object/function constructor, capitalize it
+
+-----------------------------------
+Built in Function Constructors - F4
+-----------------------------------
+Functions and function prototypes that already exist in Javascript.
+Examples:
+var a = new Number(3); 		// a is an object with a primitive value
+Number.prototype.toFixed(); (methods and functions all Number objects will have access to)
+--> a.toFixed(2); 	// Will return 3 with decimal places to 2 places.
+var a = new String("Benny");
+String.prototype.indexOf('o'); 	// will not find anything if invoked on String.prototype
+a.indexOf('B'); 	// will return 0
+var a = new Date("3/5/2015");
+a; // will print full date/time
+
+--> Look at code examples
+
+- Use primitive types, not unnecessarily instantiate objects
+var c = Number("3"); // Invokes the function Number to make 3 a number not an object
+var a = new Number("3"); // creates a number object not a primitive
+
+------------------
+Arrays and For..in
+------------------
+var arr = ['John', 'Jane', 'Jim'];
+for (var prop in arr) {		// An array is cited as an object in this case. Prop is the index and prop value is the element
+	console.log(prop + ": " +arr[prop]);
+} 
+Output:
+0: John
+1: Jane
+2: Jim
+
+--> DON'T USE FOR IN for arrays, use regular for loops. Use for in's for objects with actual properties
+
+--------------------------------------------------
+Object.create and Pure Prototypal Inheritance - D5
+--------------------------------------------------
+https://stackoverflow.com/questions/13040684/javascript-inheritance-object-create-vs-new
+Look at code D5
+Pure prototypal inheritance:
+- Object is created as a basis for all others, no set values, just default
+- Pure prototypal inheritance, just Object.create new objects pointing to the required prototype/reference
+- Object.create(prototypeClass);
+	- Essentially creates a new object, pointing to the prototype class
+	- Replace properties by just overriding using dot notation
+- Downside is that it is not supported ON ALL BROWSERS, could be lacking this keyword
+- But this shows true object oriented inheritance.
+	- Create an object, signify what it's inheriting from using .create, don't even need a function, could have it reference an object with functions (What the example is doing)
+- AND ALTERNATE TO FUNCTION CONSTRUCTORS
+
+Polyfill:
+Code that adds a feature which the engine MAY lack
+- Example addres Object.create() to any script
+if (!Object.create) {		// Will be skipped if the JS engine already has it, will add this object/function to global object
+  Object.create = function (o) {
+    if (arguments.length > 1) {
+      throw new Error('Object.create implementation'
+      + ' only accepts the first parameter.');
+    }
+    function F() {}
+    F.prototype = o;		// Set the function prototype equal to the object passed in
+    return new F();
+  };
+}
+
+Function Constructor vs Regular Object
+	- Create an object, use it as a prototype for other objects, simple. You have the ability to mutate the prototype on the fly
+	- Add features to the object rather than executing and creating more layers and more prototypes
+
+You would use Object.create if the sole purpose of a constructor function is to create an empty object that inherits from another object.
+
+---------------
+ES6 and Classes
+---------------
+Another way to create objects in JS
+- Just like Java classes
+	- Will have a constructor
+	- functions within the class
+	- It will be objects instead of a definition of objects
+- 'extends' sets the prototype
+- super() will call the constructor of the object that's the prototype
+
+Syntactic Suger:
+A different way to type something that doesn't change how it works under the hood
+
+COMPARISON
+Factory Functions (Object.create) vs. Constructor Functions vs. Classes --> object_test.js
