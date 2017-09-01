@@ -4,3 +4,20 @@ Section 8: Examining Famous Frameworks and Libraries
 -------------------------------
 Learning from Other's Good Code
 -------------------------------
+Open Source frameworks have their code online either on GitHub or jQuery
+--> See what you can learn and imitate from the patterns they use
+
+
+-----------------------------------
+Deep Dive into Source Code: jQuery - I2
+-----------------------------------
+jQuery let's you manipulate the DOM
+- jQuery.find is just Sizzle, another library used within jQuery to make selectors functional
+
+Method Chaining:
+Calling one method after another, and each method affects the parent object
+- So obj.method1().method2() where both methods end up with a 'this' variable pointing at obj
+
+Ex:
+jQuery method chains, allows addClass() and removeClass() all on one line
+- The addClass() method returns 'this', as well as the removeClass()

@@ -1,0 +1,33 @@
+===========================================
+Section 9: Let's Build a Framework/Library!
+===========================================
+
+Greetr
+- When given a first name, last name, and optional language, it generates formal and informal greetings
+- Support English and Spanish languages
+- Resusable library/framework
+- Easy jQuery like structure to use to type: 'G$()' structure
+- Support jQuery, gives it jQuery object and fill HTML tags with appropriate greeting tags
+
+1. Create IIFE with access to global variables window and jquery
+	- Creates a new execution with the variables you need
+2. Set up our Greetr object, a function so it generates an object
+3. Set default properties for it
+4. Set Greetr and its keyword alias on the global object so it can be accessed anywhere (on other scripts)
+5. Declare local variables that are not binded to the global object/Greetr object
+	- Makes Greetr.greetings or Greetr.formalGreetings private and nonaccessible because it's within the IIFE
+6. Create functions with prototype that all Greetr/G$ objects will have access to when invoked
+7. Return 'this' on functions you'd want to be chainable
+8. Incorporate jQuery
+	- Create a function that accepts a selector and whether or not the greeting is formal
+9. TIP: Add a semi colon before your IIFE at the top of your script in case a previously external js script didn't finish their code with a ';'
+10. Create an event listener using jQuery to switch the text when a certain selection is made on the dropdown
+	- CHALLENGE: Do it using vanillaJS
+
+All the functionality done by this framework didn't require a framework to make those methods. Could just make everything event-based and create everything within the app.js script.
+- Main things that make this a framework include:
+	- Creating an IIFE and making the framework object available to the global object
+		- global.Greetr = global.G$ = Greetr;
+		- Sets the available keywords to use to access the Greetr object and its functions (Greetr or G$)
+	- Either creating classes and adding functions to it, or prototyping, adds the functionality to the framework
+	- Factory way of declaring the object, to avoid calling 'new' everytime you want to create an instance of it in the app.js

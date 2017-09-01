@@ -383,6 +383,16 @@ var firstname = 'Benny';
 - Great TOOL, almost used in every framework and library that exists today.
 - This is just executing code on the fly
 
+Frameworks start with 
+var Sizzle = 
+(function(window) {
+	var support,
+		getXML,
+		moreOptions;
+}(window));
+var otherVariable = Sizzle.getXML;
+--> Which runs it when the script is loaded. Then whatever it returns is usually stored in a variable then referenced.
+
 Why is this useful?
 ------------------------------------
 Framework Aside: IIFEs and Safe Code - D15
